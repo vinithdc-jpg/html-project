@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nocturne — Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <div class="art-panel">
+      <div class="aurora" id="aurora">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
+        <span class="blob blob-3"></span>
+      </div>
+      <div class="grain"></div>
+
+      <div class="art-content">
+        <div class="brand">
+          <span class="brand-mark">✦</span>
+          <span class="brand-name">Nocturne</span>
+        </div>
+      </div>
+
+      <div class="art-middle">
+        <p class="art-quote">Make in the&nbsp;quiet hours.</p>
+        <p class="art-sub">Nocturne keeps your sessions, sound libraries, and drafts exactly where you left them — whatever time it is where you are.</p>
+      </div>
+
+      <div>
+        <div class="meta-row">
+          <span class="clock" id="clock">00:00:00</span>
+          <span class="meta-label">LOCAL TIME</span>
+        </div>
+        <div class="waveform" id="waveform" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="form-panel">
+      <div class="form-card">
+        <h1>Welcome back</h1>
+        <p class="form-sub">Sign in to pick up where you left off.</p>
+
+        <form id="loginForm" novalidate>
+
+          <div class="field" id="emailField">
+            <input type="email" id="email" placeholder=" " autocomplete="email" required>
+            <label for="email">Email</label>
+            <span class="field-error" id="emailError"></span>
+          </div>
+
+          <div class="field password" id="passwordField">
+            <input type="password" id="password" placeholder=" " autocomplete="current-password" required minlength="6">
+            <label for="password">Password</label>
+            <button type="button" class="toggle-pass" id="togglePass" aria-label="Show password">
+              <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+            <span class="field-error" id="passwordError"></span>
+          </div>
+
+          <div class="row-between">
+            <label class="remember">
+              <input type="checkbox" id="remember">
+              <span class="checkbox-box"></span>
+              Remember me
+            </label>
+            <a href="#" class="link">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <span class="btn-label">Sign in</span>
+            <span class="mini-wave" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+            <span class="check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Signed in
+            </span>
+          </button>
+
+        </form>
+
+        <div class="divider"><span>or continue with</span></div>
+
+        <div class="oauth-row">
+          <button class="oauth-btn" type="button">Google</button>
+          <button class="oauth-btn" type="button">GitHub</button>
+        </div>
+
+        <p class="signup-row">New to Nocturne? <a href="#" class="link">Create an account</a></p>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+(function(){
+
+  /* live clock */
+  var clockEl = document.getElementById('clock');
+  function tick(){
+    var d = new Date();
+    var pad = function(n){ return n.toString().padStart(2,'0'); };
+    clockEl.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  /* build ambient waveform */
+  var waveform = document.getElementById('waveform');
+  var BAR_COUNT = 44;
+  var bars = [];
+  for (var i = 0; i < BAR_COUNT; i++){
+    var bar = document.createElement('span');
+    bar.className = 'bar';
+    var dur = (1.6 + Math.random()*1.6).toFixed(2);
+    var delay = (Math.random()*2).toFixed(2);
+    var ampHi = (0.45 + Math.random()*0.55).toFixed(2);
+    bar.style.setProperty('--dur', dur + 's');
+    bar.style.setProperty('--delay', delay + 's');
+    bar.style.setProperty('--ampHi', ampHi);
+    bar.style.setProperty('--ampLo', (ampHi*0.35).toFixed(2));
+    waveform.appendChild(bar);
+    bars.push(bar);
+  }
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function pulseWave(count){
+    if (reduceMotion) return;
+    var shuffled = bars.slice().sort(function(){ return 0.5 - Math.random(); });
+    var sample = shuffled.slice(0, count || 6);
+    sample.forEach(function(b){
+      b.classList.add('pulse');
+      setTimeout(function(){ b.classList.remove('pulse'); }, 280 + Math.random()*200);
+    });
+  }
+
+  function boostAurora(on){
+    if (reduceMotion) return;
+    document.getElementById('aurora').classList.toggle('boost', on);
+  }
+
+  /* typing reacts on the ambient waveform */
+  ['email','password'].forEach(function(id){
+    var el = document.getElementById(id);
+    el.addEventListener('input', function(){ pulseWave(4); });
+  });
+
+  /* password visibility toggle */
+  var passwordInput = document.getElementById('password');
+  var toggleBtn = document.getElementById('togglePass');
+  var eyeIcon = document.getElementById('eyeIcon');
+  var EYE = '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/>';
+  var EYE_OFF = '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.6 18.6 0 0 1 4.22-4.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  toggleBtn.addEventListener('click', function(){
+    var showing = passwordInput.type === 'text';
+    passwordInput.type = showing ? 'password' : 'text';
+    eyeIcon.innerHTML = showing ? EYE : EYE_OFF;
+    toggleBtn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+  });
+
+  /* validation + submit flow */
+  var form = document.getElementById('loginForm');
+  var emailField = document.getElementById('emailField');
+  var passwordField = document.getElementById('passwordField');
+  var emailInput = document.getElementById('email');
+  var emailError = document.getElementById('emailError');
+  var passwordError = document.getElementById('passwordError');
+  var submitBtn = document.getElementById('submitBtn');
+
+  function setError(field, errorEl, message){
+    if (message){
+      field.classList.add('has-error');
+      errorEl.textContent = message;
+      field.classList.remove('shake');
+      void field.offsetWidth;
+      field.classList.add('shake');
+    } else {
+      field.classList.remove('has-error');
+      errorEl.textContent = '';
+    }
+  }
+
+  function isValidEmail(value){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (submitBtn.classList.contains('loading') || submitBtn.classList.contains('success')) return;
+
+    var emailVal = emailInput.value.trim();
+    var passVal = passwordInput.value;
+    var ok = true;
+
+    if (!emailVal){
+      setError(emailField, emailError, 'Enter your email to continue.');
+      ok = false;
+    } else if (!isValidEmail(emailVal)){
+      setError(emailField, emailError, 'That email address doesn\u2019t look right.');
+      ok = false;
+    } else {
+      setError(emailField, emailError, '');
+    }
+
+    if (!passVal){
+      setError(passwordField, passwordError, 'Enter your password to continue.');
+      ok = false;
+    } else if (passVal.length < 6){
+      setError(passwordField, passwordError, 'Password should be at least 6 characters.');
+      ok = false;
+    } else {
+      setError(passwordField, passwordError, '');
+    }
+
+    if (!ok){
+      pulseWave(10);
+      return;
+    }
+
+    submitBtn.classList.add('loading');
+    boostAurora(true);
+    pulseWave(14);
+
+    setTimeout(function(){
+      submitBtn.classList.remove('loading');
+      submitBtn.classList.add('success');
+      pulseWave(24);
+    }, 1100);
+
+  });
+
+})();
+</script>
+
+</body>
+</html>

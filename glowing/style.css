@@ -1,0 +1,23 @@
+body{
+    background-color: #111;
+}
+
+.glow-text{
+    color: #fff;
+    text-shadow: 0 0 10px #0ff,0 0 20px #0ff;
+}
+
+.glow-btn{
+    background-color: #111;
+    color: #0ff;
+    border: 2px solid #0ff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+
+}
+
+.glow-btn:hover{
+    box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
+    text-shadow: 0 0 10px #0ff;
+}
