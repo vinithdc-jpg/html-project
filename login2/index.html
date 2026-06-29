@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Glass Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <form onsubmit="event.preventDefault(); this.querySelector('button').textContent='Welcome ✨';">
+        <h1>Welcome Back</h1>
+        <p class="sub">Sign in to continue</p>
+
+        <div class="field">
+            <input type="email" placeholder="Email address" required>
+        </div>
+        <div class="field">
+            <input type="password" placeholder="Password" required>
+        </div>
+
+        <button type="submit">Login</button>
+
+        <p class="footer">No account? <a href="#">Sign up</a></p>
+    </form>
+
+</body>
+
+</html>
