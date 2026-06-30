@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="scene">
+        <div class="loader-wrap">
+            <div class="glow-ring"></div>
+            <div class="glow-ring2"></div>
+            <div class="loader">
+                <div class="liquid">
+                    <div class="wave"></div>
+                    <div class="wave2"></div>
+                    <div class="wave3"></div>
+                    <div class="bubble b1"></div>
+                    <div class="bubble b2"></div>
+                    <div class="bubble b3"></div>
+                    <div class="bubble b4"></div>
+                    <div class="bubble b5"></div>
+                    <div class="shimmer"></div>
+                </div>
+            </div>
+            <div class="pct" id="pct">68%</div>
+        </div>
+        <div class="label">Loading</div>
+    </div>
+
+    <script>
+        let v = 0, target = 68, dir = 1;
+        const el = document.getElementById('pct');
+        const liq = document.querySelector('.liquid');
+        function tick() {
+            v += dir * (Math.random() * 0.4 + 0.1);
+            if (v >= target) { v = target; dir = -1; target = Math.floor(Math.random() * 30 + 40); }
+            if (v <= 30) { v = 30; dir = 1; target = Math.floor(Math.random() * 40 + 50); }
+            el.textContent = Math.round(v) + '%';
+            liq.style.height = (v * 0.7) + '%';
+            setTimeout(tick, 80);
+        }
+        tick();
+    </script>
+
+</body>
+
+</html>
